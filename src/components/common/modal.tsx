@@ -79,13 +79,13 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div id="upload-modal" className={`fixed inset-0 ${isOpen ? '' : 'hidden'} flex items-center justify-center bg-gray-800 bg-opacity-50`}>
+    <div id="upload-modal" className={`fixed inset-0 ${isOpen ? '' : 'hidden'} flex items-center justify-center bg-gray-800 bg-opacity-50 shadow-lg`}>
       <div ref={modalWrapperRef} className="bg-white rounded-lg overflow-hidden w-96 md:w-3/4 lg:w-1/2">
-        <div className="px-6 py-6 flex items-center justify-between bg-blue-600 text-white">
-          <h2 className="text-xl font-semibold">Upload Files</h2>
+        <div className="px-6 py-4 flex items-center justify-between bg-blue-500 text-white">
+          <h2 className="text-lg font-semibold">Upload Files</h2>
           <button onClick={onClose} className="text-white focus:outline-none">&times;</button>
         </div>
-        <div className="px-6 py-4">
+        <div className="px-6 py-4 h-[300px]">
           <ul className="list-disc list-inside mb-4">
             {selectedFiles.map((file, index) => (
               <li key={index}>{file.name}</li>
