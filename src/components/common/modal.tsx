@@ -57,9 +57,21 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
   //     setFiles(fileList);
   // };
 
-  const handleAddFile = () => {
-
-  };
+  const handleAddFile = useCallback(() => {
+    // Open file selection dialog
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '*/*'; // Accept all file types
+    fileInput.multiple = true; // Allow selecting multiple files
+  
+    fileInput.onchange = (event) => {
+      const target = event.target as HTMLInputElement;
+      const newFiles = target.files ? Array.from(target.files) : [];
+      setSelectedFiles((prevFiles: File[]) => [...prevFiles, ...newFiles]);
+    };
+  
+    fileInput.click(); // Trigger click event to open file selection dialog
+  }, [setSelectedFiles]); 
 
   const handleAddFolder = () => {
     // Logic to add a folder, such as opening a file picker or selecting a directory
