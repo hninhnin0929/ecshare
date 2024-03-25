@@ -3,6 +3,7 @@ import { AiFillFileAdd } from "react-icons/ai";
 import React, { useState, useCallback, useEffect } from 'react';
 import Modal from 'react-modal';
 import ReactDOM from "react-dom";
+import { MdImage } from "react-icons/md";
 
 interface UploadModalProps {
   isOpen: boolean;
@@ -10,20 +11,12 @@ interface UploadModalProps {
 }
 
 const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
-  console.log("isOpen = ", isOpen);
   const [files, setFiles] = useState<File[]>([]);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
   // create ref for the StyledModalWrapper component
   const modalWrapperRef = React.useRef<HTMLDivElement>(null);
 
-  // check if the user has clicked inside or outside the modal
-  // useCallback is used to store the function reference, so that on modal closure, the correct callback can be cleaned in window.removeEventListener
-  // const backDropHandler = useCallback(e => {
-  //     if (!modalWrapperRef?.current?.contains(e.target)) {
-  //         onClose();
-  //     }
-  // }, []);
   const backDropHandler = useCallback((e: MouseEvent) => {
     if (modalWrapperRef.current && !modalWrapperRef.current.contains(e.target as Node)) {
       onClose();
@@ -63,15 +56,15 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
     fileInput.type = 'file';
     fileInput.accept = '*/*'; // Accept all file types
     fileInput.multiple = true; // Allow selecting multiple files
-  
+
     fileInput.onchange = (event) => {
       const target = event.target as HTMLInputElement;
       const newFiles = target.files ? Array.from(target.files) : [];
       setSelectedFiles((prevFiles: File[]) => [...prevFiles, ...newFiles]);
     };
-  
+
     fileInput.click(); // Trigger click event to open file selection dialog
-  }, [setSelectedFiles]); 
+  }, [setSelectedFiles]);
 
   const handleAddFolder = () => {
     // Logic to add a folder, such as opening a file picker or selecting a directory
@@ -83,24 +76,74 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
     console.log('Cancel clicked');
   };
 
-  const handleUpload = () => {
-    // Handle file upload logic here
-    console.log('Uploading files:', files);
-    // After upload, close the modal
-    onClose();
+  // const handleUpload = () => {
+  //   // Handle file upload logic here
+  //   console.log('Uploading files:', files);
+  //   // After upload, close the modal
+  //   onClose();
+  // };
+  const handleUpload = async () => {
+    console.log("start handle")
+    try {
+      const uploadPromises = [];
+  
+      for (const file of selectedFiles) {
+        const uploadData = new FormData();
+        uploadData.append('file', file);
+  
+        // const uploadResponse = await fetch(`${API_GATEWAY_ENDPOINT}/upload`, {
+        //   method: 'POST',
+        //   body: uploadData,
+        // });
+  
+        // if (!uploadResponse.ok) {
+        //   throw new Error(`Upload failed for file: ${file.name}`);
+        // }
+  
+        // const uploadDataJson = await uploadResponse.json();
+        // const s3Url = uploadDataJson.url; // Extract S3 pre-signed URL from response
+
+        const fileName = encodeURIComponent(file.name);
+        const s3Url = `${process.env.NEXT_PUBLIC_S3_URL}/tradepay-finance/myfiles/${fileName}`; //logos
+        console.log("s3Url --------", s3Url);
+        // Send the file to S3 using the pre-signed URL
+        uploadPromises.push(fetch(s3Url, {
+          method: 'PUT',
+          body: file,
+        }));
+      }
+  
+      // Wait for all file uploads to finish
+      await Promise.all(uploadPromises);
+  
+      console.log('Files uploaded successfully!');
+
+    } catch (error) {
+      console.error('Error uploading files:', error);
+    } finally {
+      onClose(); 
+    }
   };
 
   return (
     <div id="upload-modal" className={`fixed inset-0 ${isOpen ? '' : 'hidden'} flex items-center justify-center bg-gray-800 bg-opacity-50 shadow-lg`}>
       <div ref={modalWrapperRef} className="bg-white rounded-lg overflow-hidden w-96 md:w-3/4 lg:w-1/2">
         <div className="px-6 py-4 flex items-center justify-between bg-blue-500 text-white">
-          <h2 className="text-lg font-semibold">Upload Files</h2>
+          <h2 className="text-lg font-semibold">
+            {selectedFiles.length > 0 ? `Selected ${selectedFiles.length} File${selectedFiles.length > 1 ? 's' : ''}` : 'Upload Files'}
+          </h2>
           <button onClick={onClose} className="text-white focus:outline-none">&times;</button>
         </div>
         <div className="px-6 py-4 h-[300px]">
-          <ul className="list-disc list-inside mb-4">
+          <ul className="list-none list-inside mb-4">
             {selectedFiles.map((file, index) => (
-              <li key={index}>{file.name}</li>
+              <li key={index} className="flex items-center mb-2">
+                <MdImage className="w-6 h-6 mr-2" />
+                <span>{file.name}</span>
+                <span className="text-gray-500 ml-2">
+                  {(file.size / 1024).toFixed(2)} KB {/* Convert bytes to KB */}
+                </span>
+              </li>
             ))}
           </ul>
         </div>
