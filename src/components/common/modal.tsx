@@ -86,20 +86,29 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
     console.log("start handle")
     try {
       const uploadPromises = [];
-  
+
       for (const file of selectedFiles) {
         const uploadData = new FormData();
         uploadData.append('file', file);
-  
-        // const uploadResponse = await fetch(`${API_GATEWAY_ENDPOINT}/upload`, {
+        // ${API_GATEWAY_ENDPOINT}
+        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiaG5pbiIsImVtYWlsIjoiaG5pbkBnbWFpbC5jb20iLCJpZCI6IjY2MDI0ZDY1OWRlMmU5Yjc5NzAxYjI4YSJ9LCJpYXQiOjE3MTE0MzMzMDEsImV4cCI6MTcxMTQzNDIwMX0.cDb1CCQcm2FX9ocbYSEumWY3wKbxsh9B0kFhGSFzoyI";
+        // const uploadResponse = await fetch(`http://localhost:5001/api/files/upload`, {
         //   method: 'POST',
         //   body: uploadData,
         // });
-  
-        // if (!uploadResponse.ok) {
-        //   throw new Error(`Upload failed for file: ${file.name}`);
-        // }
-  
+        const uploadResponse = await fetch(`http://localhost:5001/api/files/upload`, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token}` 
+          },
+          body: uploadData,
+        });
+        console.log("uploadResponse--------", uploadResponse);
+
+        if (!uploadResponse.ok) {
+          throw new Error(`Upload failed for file: ${file.name}`);
+        }
+
         // const uploadDataJson = await uploadResponse.json();
         // const s3Url = uploadDataJson.url; // Extract S3 pre-signed URL from response
 
@@ -112,16 +121,16 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
           body: file,
         }));
       }
-  
+
       // Wait for all file uploads to finish
       await Promise.all(uploadPromises);
-  
+
       console.log('Files uploaded successfully!');
 
     } catch (error) {
       console.error('Error uploading files:', error);
     } finally {
-      onClose(); 
+      onClose();
     }
   };
 
