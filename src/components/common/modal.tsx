@@ -1,8 +1,6 @@
 import { AiFillFolderAdd } from "react-icons/ai";
 import { AiFillFileAdd } from "react-icons/ai";
 import React, { useState, useCallback, useEffect } from 'react';
-import Modal from 'react-modal';
-import ReactDOM from "react-dom";
 import { MdImage } from "react-icons/md";
 
 interface UploadModalProps {
@@ -11,7 +9,6 @@ interface UploadModalProps {
 }
 
 const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
-  const [files, setFiles] = useState<File[]>([]);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
   // create ref for the StyledModalWrapper component
@@ -44,11 +41,6 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
       document.body.style.overflow = ''; // Cleanup on unmount
     };
   }, [isOpen]);
-
-  // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //     const fileList = Array.from(e.target.files as FileList);
-  //     setFiles(fileList);
-  // };
 
   const handleAddFile = useCallback(() => {
     // Open file selection dialog
@@ -108,6 +100,10 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
   const handleUpload = async () => {
     console.log("start handle")
     try {
+      if (selectedFiles.length === 0) {
+        console.error('No files selected for upload');
+        return;
+      }
       const uploadPromises = [];
 
       for (const file of selectedFiles) {
