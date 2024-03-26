@@ -66,22 +66,45 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
     fileInput.click(); // Trigger click event to open file selection dialog
   }, [setSelectedFiles]);
 
-  const handleAddFolder = () => {
-    // Logic to add a folder, such as opening a file picker or selecting a directory
-    console.log('Add folder clicked');
-  };
+  const handleAddFolder = useCallback(() => {
+    const folderInput = document.createElement('input');
+    folderInput.type = 'file';
+    folderInput.setAttribute('webkitdirectory', ''); // Allow selecting a directory
+
+    folderInput.multiple = false; // Allow selecting only one folder
+
+    folderInput.onchange = (event) => {
+      const target = event.target as HTMLInputElement;
+      const selectedFolder = target.files ? Array.from(target.files) : [];
+
+      if (selectedFolder) {
+        // Get the list of files within the selected folder
+        const filesInFolder: File[] = [];
+        for (let i = 0; i < selectedFolder.length; i++) {
+          const file = selectedFolder[i];
+          filesInFolder.push(file);
+        }
+
+        // filesInFolder.forEach((file, index) => {
+        //   console.log(`File ${index + 1}:`, file.name);
+        // });
+
+        // Add files from the selected folder to the list of selected files
+        setSelectedFiles((prevFiles: File[]) => [...prevFiles, ...filesInFolder]);
+      } else {
+        console.log('No folder selected.');
+      }
+
+    };
+
+    folderInput.click(); // Trigger click event to open folder selection dialog
+  }, [setSelectedFiles]);
 
   const handleCancel = () => {
-    // Logic to cancel upload
-    console.log('Cancel clicked');
+    setSelectedFiles([]);
+    onClose();
   };
 
-  // const handleUpload = () => {
-  //   // Handle file upload logic here
-  //   console.log('Uploading files:', files);
-  //   // After upload, close the modal
-  //   onClose();
-  // };
   const handleUpload = async () => {
     console.log("start handle")
     try {
@@ -99,7 +122,7 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
         const uploadResponse = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/files/upload`, {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${token}` 
+            "Authorization": `Bearer ${token}`
           },
           body: uploadData,
         });
@@ -143,7 +166,7 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
           </h2>
           <button onClick={onClose} className="text-white focus:outline-none">&times;</button>
         </div>
-        <div className="px-6 py-4 h-[300px]">
+        <div className="px-6 py-4 h-[300px] overflow-auto">
           <ul className="list-none list-inside mb-4">
             {selectedFiles.map((file, index) => (
               <li key={index} className="flex items-center mb-2">
