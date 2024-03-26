@@ -91,12 +91,12 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
         const uploadData = new FormData();
         uploadData.append('file', file);
         // ${API_GATEWAY_ENDPOINT}
-        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiaG5pbiIsImVtYWlsIjoiaG5pbkBnbWFpbC5jb20iLCJpZCI6IjY2MDI0ZDY1OWRlMmU5Yjc5NzAxYjI4YSJ9LCJpYXQiOjE3MTE0MzMzMDEsImV4cCI6MTcxMTQzNDIwMX0.cDb1CCQcm2FX9ocbYSEumWY3wKbxsh9B0kFhGSFzoyI";
+        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiaG5pbiIsInBob25lIjoiMDEwNDMyNjU1NDAiLCJlbWFpbCI6ImhuaW5AZ21haWwuY29tIiwiaWQiOiI2NjAyNGQ2NTlkZTJlOWI3OTcwMWIyOGEifSwiaWF0IjoxNzExNDM3OTM0LCJleHAiOjE3MTE1MjQzMzR9.GEuzt9J-6EQCCDeaBj4pZ5l4OrRh3mrTSWvlwmqR1H4";
         // const uploadResponse = await fetch(`http://localhost:5001/api/files/upload`, {
         //   method: 'POST',
         //   body: uploadData,
         // });
-        const uploadResponse = await fetch(`http://localhost:5001/api/files/upload`, {
+        const uploadResponse = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/files/upload`, {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${token}` 
