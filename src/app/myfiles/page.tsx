@@ -37,7 +37,9 @@ export default function MyFiles() {
         {files.map((file, index) => (
           <div key={index} className="bg-gray-100 p-4 rounded-md">
             <p className="font-semibold">{file.filename}</p>
-            <p className="text-gray-500">{file.size} bytes</p>
+            <p className="text-gray-500">
+              {(file.size / 1024).toFixed(2)} KB
+            </p>
             <p className="text-gray-500">{file.url} </p>
           </div>
         ))}
