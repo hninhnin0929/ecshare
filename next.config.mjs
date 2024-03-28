@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+    images: {
+        domains: ['s3.tradepay.co.kr'],
+      },
+};
 
 export default nextConfig;

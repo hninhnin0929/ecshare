@@ -110,7 +110,7 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
         const uploadData = new FormData();
         uploadData.append('file', file);
         // ${API_GATEWAY_ENDPOINT}
-        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiaG5pbiIsInBob25lIjoiMDEwNDMyNjU1NDAiLCJlbWFpbCI6ImhuaW5AZ21haWwuY29tIiwiaWQiOiI2NjAyNGQ2NTlkZTJlOWI3OTcwMWIyOGEifSwiaWF0IjoxNzExNDM3OTM0LCJleHAiOjE3MTE1MjQzMzR9.GEuzt9J-6EQCCDeaBj4pZ5l4OrRh3mrTSWvlwmqR1H4";
+        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiaG5pbiIsInBob25lIjoiMDEwNDMyNjU1NDAiLCJlbWFpbCI6ImhuaW5AZ21haWwuY29tIiwiaWQiOiI2NjAyNGQ2NTlkZTJlOWI3OTcwMWIyOGEifSwiaWF0IjoxNzExNTkyMTc3LCJleHAiOjE3MTE2Nzg1Nzd9.xVYnBbejAt187xyJl9wIBqvKcTcn1lEaACqLT4RugKU";
         // const uploadResponse = await fetch(`http://localhost:5001/api/files/upload`, {
         //   method: 'POST',
         //   body: uploadData,
