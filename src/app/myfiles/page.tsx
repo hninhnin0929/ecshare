@@ -56,7 +56,7 @@ export default function MyFiles() {
     } else if (extension === 'xls' || extension === 'xlsx') {
       console.log("excelIcon..........", excelIcon);
       return excelIcon; // Assuming you have an excel icon defined
-    } else if (extension === 'jpg' || extension === 'jpeg' || extension === 'png' || extension === 'gif') {
+    } else if (extension === 'jpg' || extension === 'jpeg' || extension === 'png' || extension === 'gif' || extension ==='webp') {
       console.log("file.url..........", file.url);
       return file.url;
     } else {
@@ -65,6 +65,35 @@ export default function MyFiles() {
     }
   };
 
+  const handleCopyLink = (link: string) => {
+    // to copy the link to clipboard
+    navigator.clipboard.writeText(link);
+  };
+
+  const handleDownload = (url: string, filename: string) => {
+
+    // const encodedFilename = encodeURIComponent(filename);
+
+    // Create a temporary anchor element
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename);
+
+    if (isImageFile(filename)) {
+      window.open(url, '_blank');
+    } else {
+      // Simulate click on the anchor element to trigger download
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
+  const isImageFile = (filename: string) => {
+    const extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp']; // Add more image extensions if needed
+    const fileExtension = getFileExtension(filename);
+    return extensions.includes(fileExtension.toLowerCase());
+  };
 
   return (
     <div>
@@ -84,11 +113,12 @@ export default function MyFiles() {
                 )}
               </span>
               <span>{file.filename}</span>
+              {/* <span>{decodeURIComponent(file.filename)}</span> */}
               <span className="text-gray-500">{(file.size / 1024).toFixed(2)} KB</span>
             </div>
             <div className="flex space-x-4">
-              <span><MdInsertLink size={24} /></span>
-              <span><MdOutlineFileDownload size={24} /></span>
+              <span onClick={() => handleCopyLink(file.url)} className='cursor-pointer'><MdInsertLink size={24} /></span>
+              <span onClick={() => handleDownload(file.url, file.filename)} className='cursor-pointer'><MdOutlineFileDownload size={24} /></span>
             </div>
           </div>
         ))}
