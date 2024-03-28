@@ -108,7 +108,8 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
 
       for (const file of selectedFiles) {
         const uploadData = new FormData();
-        uploadData.append('file', file);
+        // uploadData.append('file', file);
+        uploadData.append('file', file, encodeURIComponent(file.name));
         // ${API_GATEWAY_ENDPOINT}
         const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiaG5pbiIsInBob25lIjoiMDEwNDMyNjU1NDAiLCJlbWFpbCI6ImhuaW5AZ21haWwuY29tIiwiaWQiOiI2NjAyNGQ2NTlkZTJlOWI3OTcwMWIyOGEifSwiaWF0IjoxNzExNjAyOTA2LCJleHAiOjE3MTE2ODkzMDZ9.AKynuf7xijMTDbz9lBI_fo0ZNLAjYWxHobXLxxlHq5s";
         // const uploadResponse = await fetch(`http://localhost:5001/api/files/upload`, {
@@ -118,7 +119,7 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
         const uploadResponse = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/files/upload`, {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${token}`
+            "Authorization": `Bearer ${token}`,
           },
           body: uploadData,
         });
@@ -132,7 +133,7 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
         // const s3Url = uploadDataJson.url; // Extract S3 pre-signed URL from response
 
         const fileName = encodeURIComponent(file.name);
-        const s3Url = `${process.env.NEXT_PUBLIC_S3_URL}/tradepay-finance/logos/${fileName}`; //logos
+        const s3Url = `${process.env.NEXT_PUBLIC_S3_URL}/tradepay-finance/myfiles/${fileName}`; //logos
         console.log("s3Url --------", s3Url);
         // Send the file to S3 using the pre-signed URL
         uploadPromises.push(fetch(s3Url, {

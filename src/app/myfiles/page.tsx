@@ -97,7 +97,7 @@ export default function MyFiles() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold mb-4">My Files</h1>
+      <h1 className="text-2xl font-semibold mb-4">My Files 한국어</h1>
       <div className="grid grid-cols-2 gap-4">
         {files.map((file, index) => (
           <div key={index} className="bg-gray-100 p-4 rounded-md flex justify-between">
@@ -112,8 +112,8 @@ export default function MyFiles() {
                   <StaticImage src={getFileIcon(file) as StaticImageData} alt="File Icon" width={32} height={32} className="" />
                 )}
               </span>
-              <span>{file.filename}</span>
-              {/* <span>{decodeURIComponent(file.filename)}</span> */}
+              {/* <span>{file.filename}</span> */}
+              <span>{decodeURIComponent(file.filename)}</span>
               <span className="text-gray-500">{(file.size / 1024).toFixed(2)} KB</span>
             </div>
             <div className="flex space-x-4">
