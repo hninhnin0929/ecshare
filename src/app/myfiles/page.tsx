@@ -9,6 +9,7 @@ import { StaticImageData } from 'next/image';
 import StaticImage from 'next/image';
 import { MdInsertLink } from "react-icons/md";
 import { MdOutlineFileDownload } from "react-icons/md";
+import { format } from 'date-fns';
 
 
 const fetcher = async (url: RequestInfo, ...args: RequestInit[]): Promise<any> => {
@@ -21,6 +22,7 @@ interface File {
   filename: string;
   size: number;
   url: string;
+  createdAt: string;
 }
 
 // interface MyFilesProps {
@@ -56,7 +58,7 @@ export default function MyFiles() {
     } else if (extension === 'xls' || extension === 'xlsx') {
       console.log("excelIcon..........", excelIcon);
       return excelIcon; // Assuming you have an excel icon defined
-    } else if (extension === 'jpg' || extension === 'jpeg' || extension === 'png' || extension === 'gif' || extension ==='webp') {
+    } else if (extension === 'jpg' || extension === 'jpeg' || extension === 'png' || extension === 'gif' || extension === 'webp') {
       console.log("file.url..........", file.url);
       return file.url;
     } else {
@@ -98,27 +100,52 @@ export default function MyFiles() {
   return (
     <div>
       <h1 className="text-2xl font-semibold mb-4">My Files 한국어</h1>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid md:grid-cols-2 gap-4">
         {files.map((file, index) => (
-          <div key={index} className="bg-gray-100 p-4 rounded-md flex justify-between">
-            {/* <div>
-            {getFileIcon(file) && (
-              <img src={getFileIcon(file) as string} alt="File Icon" className="w-8 h-8 mr-2" />
-            )}
-            </div> */}
-            <div className="font-semibold flex space-x-4">
-              <span>
-                {getFileIcon(file) && (
-                  <StaticImage src={getFileIcon(file) as StaticImageData} alt="File Icon" width={32} height={32} className="" />
-                )}
-              </span>
-              {/* <span>{file.filename}</span> */}
-              <span>{decodeURIComponent(file.filename)}</span>
-              <span className="text-gray-500">{(file.size / 1024).toFixed(2)} KB</span>
+          <div key={index} 
+            className="bg-gray-100 p-4 rounded-md flex items-center justify-between">
+            <div className="flex items-center space-x-2 flex-shrink">
+              <div>
+                <span>
+                  {getFileIcon(file) && (
+                    <StaticImage
+                      src={getFileIcon(file) as StaticImageData}
+                      alt="File Icon"
+                      width={32}
+                      height={32}
+                      className="" />
+                  )}
+                </span>
+              </div>
+              <div className='grid md:grid-cols-2 gap-1 items-center '>
+                <span className='font-semibold text-sm'>
+                  {decodeURIComponent(file.filename)}
+                </span>
+                <span className="text-gray-500 text-xs">
+                  {(file.size / 1024).toFixed(2)} KB
+                </span>
+              </div>
             </div>
-            <div className="flex space-x-4">
-              <span onClick={() => handleCopyLink(file.url)} className='cursor-pointer'><MdInsertLink size={24} /></span>
-              <span onClick={() => handleDownload(file.url, file.filename)} className='cursor-pointer'><MdOutlineFileDownload size={24} /></span>
+            <div className="md:grid grid-cols-2 gap-1">
+              <div className=''>
+                <span className='text-gray-500 text-xs'>
+                  {format(new Date(file.createdAt), 'yyyy-MM-dd HH:mm:ss')}
+                </span>
+              </div>
+              <div className='flex items-center space-x-4 justify-end'>
+                <span
+                  onClick={() => handleCopyLink(file.url)}
+                  className='cursor-pointer'
+                  title='Copy share link'>
+                  <MdInsertLink size={20} />
+                </span>
+                <span
+                  onClick={() => handleDownload(file.url, file.filename)}
+                  className='cursor-pointer'
+                  title='Download file'>
+                  <MdOutlineFileDownload size={20} />
+                </span>
+              </div>
             </div>
           </div>
         ))}
