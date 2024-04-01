@@ -50,19 +50,14 @@ export default function MyFiles() {
   const getFileIcon = (file: File) => {
     const extension = getFileExtension(file.filename);
     if (extension === 'pdf') {
-      console.log("pdfIcon..........", pdfIcon);
       return pdfIcon;
     } else if (extension === 'doc' || extension === 'docx') {
-      console.log("wordIcon..........", wordIcon);
       return wordIcon;
     } else if (extension === 'xls' || extension === 'xlsx') {
-      console.log("excelIcon..........", excelIcon);
       return excelIcon; // Assuming you have an excel icon defined
     } else if (extension === 'jpg' || extension === 'jpeg' || extension === 'png' || extension === 'gif' || extension === 'webp') {
-      console.log("file.url..........", file.url);
       return file.url;
     } else {
-      console.log("defaultIcon..........", defaultIcon);
       return defaultIcon;
     }
   };
@@ -119,7 +114,7 @@ export default function MyFiles() {
               </div>
               <div className='grid md:grid-cols-2 gap-1 items-center '>
                 <span className='font-semibold text-sm'>
-                  {decodeURIComponent(file.filename)}
+                  {file.filename}
                 </span>
                 <span className="text-gray-500 text-xs">
                   {(file.size / 1024).toFixed(2)} KB
