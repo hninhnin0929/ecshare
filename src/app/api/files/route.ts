@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 export async function GET(){
     
     try {
-        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiaG5pbiIsInBob25lIjoiMDEwNDMyNjU1NDAiLCJlbWFpbCI6ImhuaW5AZ21haWwuY29tIiwiaWQiOiI2NjAyNGQ2NTlkZTJlOWI3OTcwMWIyOGEifSwiaWF0IjoxNzExNjc5MzM3LCJleHAiOjE3MTE3NjU3Mzd9.M4RL2EBJfdzVQJ1c7tynmF1y7Pu_fGUXiWIMROU6pTY";
+        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiaG5pbiIsInBob25lIjoiMDEwNDMyNjU1NDAiLCJlbWFpbCI6ImhuaW5AZ21haWwuY29tIiwiaWQiOiI2NjAyNGQ2NTlkZTJlOWI3OTcwMWIyOGEifSwiaWF0IjoxNzExOTQ2MTEzLCJleHAiOjE3MTIwMzI1MTN9.4V4Q70CFXhW4-hU1zKGpol4iPukxgMaRfSU0XZLd78Q";
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/files`, {
             method: "GET",

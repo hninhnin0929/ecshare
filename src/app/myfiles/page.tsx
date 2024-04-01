@@ -94,7 +94,7 @@ export default function MyFiles() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold mb-4">My Files 한국어</h1>
+      <h1 className="text-2xl font-semibold mb-4">My Files</h1>
       <div className="grid md:grid-cols-2 gap-4">
         {files.map((file, index) => (
           <div key={index} 

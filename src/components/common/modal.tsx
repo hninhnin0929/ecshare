@@ -111,7 +111,7 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
         // uploadData.append('file', file);
         uploadData.append('file', file, encodeURIComponent(file.name));
         // ${API_GATEWAY_ENDPOINT}
-        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiaG5pbiIsInBob25lIjoiMDEwNDMyNjU1NDAiLCJlbWFpbCI6ImhuaW5AZ21haWwuY29tIiwiaWQiOiI2NjAyNGQ2NTlkZTJlOWI3OTcwMWIyOGEifSwiaWF0IjoxNzExNjAyOTA2LCJleHAiOjE3MTE2ODkzMDZ9.AKynuf7xijMTDbz9lBI_fo0ZNLAjYWxHobXLxxlHq5s";
+        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiaG5pbiIsInBob25lIjoiMDEwNDMyNjU1NDAiLCJlbWFpbCI6ImhuaW5AZ21haWwuY29tIiwiaWQiOiI2NjAyNGQ2NTlkZTJlOWI3OTcwMWIyOGEifSwiaWF0IjoxNzExOTQ2MTEzLCJleHAiOjE3MTIwMzI1MTN9.4V4Q70CFXhW4-hU1zKGpol4iPukxgMaRfSU0XZLd78Q";
         // const uploadResponse = await fetch(`http://localhost:5001/api/files/upload`, {
         //   method: 'POST',
         //   body: uploadData,
