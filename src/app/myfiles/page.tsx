@@ -32,7 +32,7 @@ export default function MyFiles() {
 
   const [files, setFiles] = useState<File[]>([]);
 
-  const { data, error, mutate } = useSWR('/api/files/fetch', fetcher);
+  const { data, error, mutate } = useSWR('/api/files', fetcher);
   console.log("Getting files... ", data);
 
   useEffect(() => {
