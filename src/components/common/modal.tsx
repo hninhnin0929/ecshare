@@ -2,6 +2,9 @@ import { AiFillFolderAdd } from "react-icons/ai";
 import { AiFillFileAdd } from "react-icons/ai";
 import React, { useState, useCallback, useEffect } from 'react';
 import { MdImage } from "react-icons/md";
+import { useRouter } from 'next/navigation';
+import { mutate } from 'swr';
+
 
 interface UploadModalProps {
   isOpen: boolean;
@@ -10,6 +13,7 @@ interface UploadModalProps {
 
 const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const router = useRouter();
 
   // create ref for the StyledModalWrapper component
   const modalWrapperRef = React.useRef<HTMLDivElement>(null);
@@ -197,10 +201,14 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
       await Promise.all(uploadPromises);
 
       console.log('Files uploaded successfully!');
-
-
+    
     } catch (error) {
       console.error('Error uploading files:', error);
+    } finally {
+      onClose();
+      // mutate('/api/files');
+      // router.push('/myfiles');
+      window.location.reload();
     }
   };
 

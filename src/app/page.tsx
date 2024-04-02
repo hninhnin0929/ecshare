@@ -1,8 +1,7 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { MdOutlineFileUpload } from 'react-icons/md';
 import { Button } from '@/components/common/button';
-import UploadModal from '@/components/common/modal';
 import Link from 'next/link';
 
 export default function Home() {
