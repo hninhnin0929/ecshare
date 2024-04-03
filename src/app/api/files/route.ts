@@ -6,12 +6,10 @@ import { NextRequest, NextResponse } from "next/server";
 export const GET = async (request: NextRequest) => {
 
     try {
-        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiaG5pbiIsInBob25lIjoiMDEwNDMyNjU1NDAiLCJlbWFpbCI6ImhuaW5AZ21haWwuY29tIiwiaWQiOiI2NjAyNGQ2NTlkZTJlOWI3OTcwMWIyOGEifSwiaWF0IjoxNzEyMDQ2MjQ1LCJleHAiOjE3MTIxMzI2NDV9.Cr71axQ8zVkVC3RLWhru9M6ZBkS2HOxS2wZ0_Tz3-yo";
-
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/files`, {
             method: "GET",
             headers: {
-                "Authorization": `Bearer ${token}`
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_TOKEN}`
             },
         });
 
@@ -35,11 +33,10 @@ export const POST = async (request: NextRequest) => {
         const formData = await request.formData();
         // const files = formData.getAll('file'); 
         
-        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiaG5pbiIsInBob25lIjoiMDEwNDMyNjU1NDAiLCJlbWFpbCI6ImhuaW5AZ21haWwuY29tIiwiaWQiOiI2NjAyNGQ2NTlkZTJlOWI3OTcwMWIyOGEifSwiaWF0IjoxNzEyMDQ2MjQ1LCJleHAiOjE3MTIxMzI2NDV9.Cr71axQ8zVkVC3RLWhru9M6ZBkS2HOxS2wZ0_Tz3-yo";
         const uploadResponse = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/files/upload`, {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${token}`,
+            "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_TOKEN}`,
           },
           body: formData,
         });
@@ -52,6 +49,24 @@ export const POST = async (request: NextRequest) => {
       }
 };
 
+export const DELETE = async (request: NextRequest) => {
 
+    try {
+        const fileId: string = request.nextUrl.searchParams.get("fileId") || "";
+
+        const deleteResponse = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/files/${fileId}`, {
+          method: "DELETE",
+          headers: {
+            "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_TOKEN}`,
+          },
+        });
+
+        return deleteResponse;
+        
+    } catch (error) {
+        console.error('Error deleting file:', error);
+        return NextResponse.json({ error: 'Error deleting file' }, { status: 500 });
+    }
+};
 
 export const revalidate = 0;

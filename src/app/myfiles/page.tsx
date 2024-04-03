@@ -10,6 +10,7 @@ import StaticImage from 'next/image';
 import { MdInsertLink } from "react-icons/md";
 import { MdOutlineFileDownload } from "react-icons/md";
 import { format } from 'date-fns';
+import { AiOutlineDelete } from "react-icons/ai";
 
 
 const fetcher = async (url: RequestInfo, ...args: RequestInit[]): Promise<any> => {
@@ -23,6 +24,7 @@ interface File {
   size: number;
   url: string;
   createdAt: string;
+  _id: string
 }
 
 // interface MyFilesProps {
@@ -40,7 +42,7 @@ export default function MyFiles() {
       setFiles(data.files || []);
     }
   }, [data]);
-  
+
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -52,11 +54,11 @@ export default function MyFiles() {
   //             "Authorization": `Bearer ${token}`
   //         },
   //       });
-  
+
   //       if (!response.ok) {
   //         throw new Error(`Failed to fetch data: ${response.statusText}`);
   //       }
-  
+
   //       const data = await response.json();
   //       setFiles(data || []);
   //     } catch (error) {
@@ -64,10 +66,10 @@ export default function MyFiles() {
   //       // Handle errors, such as displaying an error message or retrying the request
   //     }
   //   };
-  
+
   //   fetchData();
   // }, []);
-  
+
 
   // to get file extension
   const getFileExtension = (filename: string) => {
@@ -96,9 +98,6 @@ export default function MyFiles() {
   };
 
   const handleDownload = (url: string, filename: string) => {
-
-    // const encodedFilename = encodeURIComponent(filename);
-
     // Create a temporary anchor element
     const link = document.createElement('a');
     link.href = url;
@@ -120,12 +119,29 @@ export default function MyFiles() {
     return extensions.includes(fileExtension.toLowerCase());
   };
 
+  // Function to handle file deletion
+  const handleDelete = async (fileId: string) => {
+    try {
+      const response = await fetch(`/api/files?fileId=${fileId}`, {
+        method: 'DELETE'
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete file');
+      }
+
+      await mutate('/api/files');
+    } catch (error) {
+      console.error('Error deleting file:', error);
+    }
+  };
+
   return (
     <div>
       <h1 className="text-2xl font-semibold mb-4">My Files</h1>
       <div className="grid md:grid-cols-2 gap-4">
         {files.map((file, index) => (
-          <div key={index} 
+          <div key={index}
             className="bg-gray-100 p-4 rounded-md flex items-center justify-between">
             <div className="flex items-center space-x-2 flex-shrink">
               <div>
@@ -167,6 +183,12 @@ export default function MyFiles() {
                   className='cursor-pointer'
                   title='Download file'>
                   <MdOutlineFileDownload size={20} />
+                </span>
+                <span
+                  onClick={() => handleDelete(file._id)}
+                  className='cursor-pointer'
+                  title='Remove your file'>
+                  <AiOutlineDelete size={20} />
                 </span>
               </div>
             </div>
