@@ -3,8 +3,12 @@ import { AiFillFileAdd } from "react-icons/ai";
 import React, { useState, useCallback, useEffect } from 'react';
 import { MdImage } from "react-icons/md";
 import { useRouter } from 'next/navigation';
-import { mutate } from 'swr';
+import useSWR from 'swr';
 
+const fetcher = async (url: RequestInfo, ...args: RequestInit[]): Promise<any> => {
+  const res = await fetch(url, ...args);
+  return res.json();
+};
 
 interface UploadModalProps {
   isOpen: boolean;
@@ -206,11 +210,12 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
       console.error('Error uploading files:', error);
     } finally {
       onClose();
-      // mutate('/api/files');
-      // router.push('/myfiles');
-      window.location.reload();
+      mutate('/api/files');
     }
   };
+
+  const { data, error, mutate } = useSWR('/api/files', fetcher);
+  console.log("Getting files...in modal ", data);
 
   return (
     <div id="upload-modal" className={`fixed inset-0 ${isOpen ? '' : 'hidden'} flex items-center justify-center bg-gray-800 bg-opacity-50 shadow-lg`}>
