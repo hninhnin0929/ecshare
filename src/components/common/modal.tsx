@@ -1,14 +1,10 @@
 import { AiFillFolderAdd } from "react-icons/ai";
 import { AiFillFileAdd } from "react-icons/ai";
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useContext } from 'react';
 import { MdImage } from "react-icons/md";
-import { useRouter } from 'next/navigation';
-import useSWR from 'swr';
+import { FilesContext, FilesProvider } from '@/context/filesContext';
+import { FilesContextProps } from "@/types/FilesContextProps";
 
-const fetcher = async (url: RequestInfo, ...args: RequestInit[]): Promise<any> => {
-  const res = await fetch(url, ...args);
-  return res.json();
-};
 
 interface UploadModalProps {
   isOpen: boolean;
@@ -17,7 +13,9 @@ interface UploadModalProps {
 
 const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const router = useRouter();
+
+  const filesContext = useContext(FilesContext) as FilesContextProps;
+  const { mutate } = filesContext;
 
   // create ref for the StyledModalWrapper component
   const modalWrapperRef = React.useRef<HTMLDivElement>(null);
@@ -205,7 +203,7 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
       await Promise.all(uploadPromises);
 
       console.log('Files uploaded successfully!');
-    
+
     } catch (error) {
       console.error('Error uploading files:', error);
     } finally {
@@ -214,49 +212,49 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
     }
   };
 
-  const { data, error, mutate } = useSWR('/api/files', fetcher);
-  console.log("Getting files...in modal ", data);
-
   return (
-    <div id="upload-modal" className={`fixed inset-0 ${isOpen ? '' : 'hidden'} flex items-center justify-center bg-gray-800 bg-opacity-50 shadow-lg`}>
-      <div ref={modalWrapperRef} className="bg-white rounded-lg overflow-hidden w-96 md:w-3/4 lg:w-1/2">
-        <div className="px-6 py-4 flex items-center justify-between bg-blue-500 text-white">
-          <h2 className="text-lg font-semibold">
-            {selectedFiles.length > 0 ? `Selected ${selectedFiles.length} File${selectedFiles.length > 1 ? 's' : ''}` : 'Upload Files'}
-          </h2>
-          <button onClick={onClose} className="text-white focus:outline-none">&times;</button>
-        </div>
-        <div className="px-6 py-4 h-[300px] overflow-auto">
-          <ul className="list-none list-inside mb-4">
-            {selectedFiles.map((file, index) => (
-              <li key={index} className="flex items-center mb-2">
-                <MdImage className="w-6 h-6 mr-2" />
-                <span>{file.name}</span>
-                <span className="text-gray-500 ml-2">
-                  {(file.size / 1024).toFixed(2)} KB {/* Convert bytes to KB */}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="px-6 py-4 flex justify-between items-center bg-gray-100">
-          <div className="flex justify-between items-center space-x-6">
-            <button onClick={handleAddFile} className="flex text-sm">
-              <AiFillFileAdd className="mr-1 w-6 h-6" />
-              Add File
-            </button>
-            <button onClick={handleAddFolder} className="flex text-sm">
-              <AiFillFolderAdd className="mr-1 w-6 h-6" />
-              Add Folder
-            </button>
+    <FilesProvider>
+      <div id="upload-modal" className={`fixed inset-0 ${isOpen ? '' : 'hidden'} flex items-center justify-center bg-gray-800 bg-opacity-50 shadow-lg`}>
+        <div ref={modalWrapperRef} className="bg-white rounded-lg overflow-hidden w-96 md:w-3/4 lg:w-1/2">
+          <div className="px-6 py-4 flex items-center justify-between bg-blue-500 text-white">
+            <h2 className="text-lg font-semibold">
+              {selectedFiles.length > 0 ? `Selected ${selectedFiles.length} File${selectedFiles.length > 1 ? 's' : ''}` : 'Upload Files'}
+            </h2>
+            <button onClick={onClose} className="text-white focus:outline-none">&times;</button>
           </div>
-          <div>
-            <button onClick={handleCancel} className="bg-gray-400 text-white px-4 py-2 rounded-md mr-2 hover:bg-gray-500 focus:outline-none focus:bg-gray-500">Cancel</button>
-            <button onClick={handleUpload} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Begin Upload</button>
+          <div className="px-6 py-4 h-[300px] overflow-auto">
+            <ul className="list-none list-inside mb-4">
+              {selectedFiles.map((file, index) => (
+                <li key={index} className="flex items-center mb-2">
+                  <MdImage className="w-6 h-6 mr-2" />
+                  <span>{file.name}</span>
+                  <span className="text-gray-500 ml-2">
+                    {(file.size / 1024).toFixed(2)} KB {/* Convert bytes to KB */}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="px-6 py-4 flex justify-between items-center bg-gray-100">
+            <div className="flex justify-between items-center space-x-6">
+              <button onClick={handleAddFile} className="flex text-sm">
+                <AiFillFileAdd className="mr-1 w-6 h-6" />
+                Add File
+              </button>
+              <button onClick={handleAddFolder} className="flex text-sm">
+                <AiFillFolderAdd className="mr-1 w-6 h-6" />
+                Add Folder
+              </button>
+            </div>
+            <div>
+              <button onClick={handleCancel} className="bg-gray-400 text-white px-4 py-2 rounded-md mr-2 hover:bg-gray-500 focus:outline-none focus:bg-gray-500">Cancel</button>
+              <button onClick={handleUpload} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Begin Upload</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </FilesProvider>
+
   );
 
 

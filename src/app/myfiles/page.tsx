@@ -1,6 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-import useSWR from 'swr';
+import React, { useContext } from 'react';
 import pdfIcon from '../../../public/icons8-pdf-file-65.png';
 import wordIcon from '../../../public/icons8-word-64.png';
 import defaultIcon from '../../../public/icons8-file-64.png';
@@ -11,65 +10,27 @@ import { MdInsertLink } from "react-icons/md";
 import { MdOutlineFileDownload } from "react-icons/md";
 import { format } from 'date-fns';
 import { AiOutlineDelete } from "react-icons/ai";
+import { FilesContext } from '@/context/filesContext';
+import { FileProps } from '@/types/FileProps';
 
-
-const fetcher = async (url: RequestInfo, ...args: RequestInit[]): Promise<any> => {
-  const res = await fetch(url, ...args);
-  return res.json();
-};
-
-
-interface File {
-  filename: string;
-  size: number;
-  url: string;
-  createdAt: string;
-  _id: string
-}
-
-// interface MyFilesProps {
-//   files?: File[]; 
-// }
 export default function MyFiles() {
 
-  const [files, setFiles] = useState<File[]>([]);
+  // Access files context
+  const filesContext = useContext(FilesContext);
+  console.log("filesContext#######", filesContext)
+  
+  // Check if filesContext is not null
+  if (!filesContext) {
+    // Handle the case when the context value is null
+    return <div>Loading...</div>;
+  }
 
-  const { data, error, mutate } = useSWR('/api/files', fetcher);
-  console.log("Getting files... ", data);
+  // Extract files from the context
+  const { files } = filesContext;
+  const { mutate } = filesContext;
 
-  useEffect(() => {
-    if (data) {
-      setFiles(data.files || []);
-    }
-  }, [data]);
-
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiaG5pbiIsInBob25lIjoiMDEwNDMyNjU1NDAiLCJlbWFpbCI6ImhuaW5AZ21haWwuY29tIiwiaWQiOiI2NjAyNGQ2NTlkZTJlOWI3OTcwMWIyOGEifSwiaWF0IjoxNzExOTQ2MTEzLCJleHAiOjE3MTIwMzI1MTN9.4V4Q70CFXhW4-hU1zKGpol4iPukxgMaRfSU0XZLd78Q";
-  //       const response = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/files`, {
-  //         method: "GET",
-  //         headers: {
-  //             "Authorization": `Bearer ${token}`
-  //         },
-  //       });
-
-  //       if (!response.ok) {
-  //         throw new Error(`Failed to fetch data: ${response.statusText}`);
-  //       }
-
-  //       const data = await response.json();
-  //       setFiles(data || []);
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //       // Handle errors, such as displaying an error message or retrying the request
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
-
+  // Now you can use 'files' in your component
+  console.log("files-------", files);
 
   // to get file extension
   const getFileExtension = (filename: string) => {
@@ -77,7 +38,7 @@ export default function MyFiles() {
   };
 
   // Function to get icon/image based on file type
-  const getFileIcon = (file: File) => {
+  const getFileIcon = (file: FileProps) => {
     const extension = getFileExtension(file.filename);
     if (extension === 'pdf') {
       return pdfIcon;
@@ -196,5 +157,6 @@ export default function MyFiles() {
         ))}
       </div>
     </div>
+
   );
 }

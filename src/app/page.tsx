@@ -10,7 +10,7 @@ export default function Home() {
     <div className="flex flex-col justify-center items-center h-screen bg-gray-100">
       <h1 className="text-3xl font-bold mb-8">ECShare: Collaborative File Sharing System</h1>
       <div>
-        <Link href={"/myfiles"}>
+        <Link href={"/myfiles-wrapper"}>
           <Button
             variant="default"
             size="xl"
